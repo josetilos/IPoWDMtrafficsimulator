@@ -2,9 +2,9 @@
 
 
 
-# We assume a horshoe ring with N Access COs connected to 2 Regional COs.
+# We assume a horshoe ring with N Access COs connected to 2 Regional COs Naco.
 
-Naco = 7;
+Naco = 7; 
 
 simulateE2Edelay <- function(Naco) {
   
@@ -59,15 +59,87 @@ boxplot(data,ylab = "End2End Latency (us)","title = Horshoe Access Ring")
 
 
   
+library(ggplot2)
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+
+xs = c(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048)
+
+fun.1 <- function(x) { 1 / ( 0.01 + x) }
+fun.2 <- function(x) { 1 / ( 0.1 + x) }
+fun.3 <- function(x) { 1 / ( 0.3 + x) }
+
+ggplot(data.frame(x = xs), aes(x=x)) + 
+  lapply(1:3, function(i) {
+    fun_name <- paste0("fun.", i)
+    fun <- get(fun_name)
+    line <- geom_function(fun = fun,
+                          aes(colour = fun_name))
+    points <- geom_point(aes(y = fun(xs), colour = fun_name))
+    list(line, points)
+  }) +
+  scale_x_log10(breaks = xs, name = "Input") +
+  scale_y_continuous(name = "Growth") +
+  theme_classic() +
+  theme(
+    legend.position = c(.95, .95),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(6, 6, 6, 6)
+  )
+
+
+base <- ggplot(data.frame(x = xs), aes(x=as.factor(x)))
+#Plot 2
+base + theme_classic() +
+  theme(
+    legend.position = c(.95, .95),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(6, 6, 6, 6)
+  ) +
+  stat_function(fun = fun.1, aes(colour = "fun.1"),geom = 'point',size=1) + 
+  stat_function(fun = fun.1, aes(colour = "fun.1"),geom = 'line') + 
+  stat_function(fun = fun.2, aes(colour = "fun.2"),geom='point',size=1) +
+  stat_function(fun = fun.2, aes(colour = "fun.2"),geom = 'line') +
+  stat_function(fun = fun.3, aes(colour = "fun.3"),geom = 'point',size=1) +
+  stat_function(fun = fun.3, aes(colour = "fun.3"),geom = 'line') +
+  scale_x_discrete(name = "Input",
+                   breaks = xs) +
+  scale_y_discrete(name = "Growth")+
+  scale_color_manual(values = c('red','blue','yellow'))
 
 
 
 
 
+# set seed
+set.seed(1234)
+
+# create dataframe
+df <- data.frame(category=factor(rep(c("3 hops", "5 hops", "7 hops", "9 hops"), each=nrow(data))),
+                 Latency_us=c(data$ACO3,data$ACO5,data$ACO7,data$ACO9))
+
+# load library ggplot2 package
+
+library(ggplot2)
 
 
 
 
+# Basic density plot with custom color
+ggplot(df, aes(x=Latency_us, color=category)) + 
+  
+  # color property for changing color of plot
+  # geom_density() function plots the density plot
+  geom_density()
 
 
 
