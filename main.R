@@ -2,7 +2,7 @@
 
 
 
-# We assume a horshoe ring with N Access COs connected to 2 Regional COs Naco.
+# We assume a horseshoe ring with N Access COs connected to 2 Regional COs Naco.
 
 Naco = 7; 
 
