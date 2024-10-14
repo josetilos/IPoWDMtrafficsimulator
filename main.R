@@ -6,6 +6,8 @@
 
 Naco = 7; 
 
+a = 2
+
 simulateE2Edelay <- function(Naco) {
   
   Peakmax = 100; Peakmin = Peakmax/4; 
